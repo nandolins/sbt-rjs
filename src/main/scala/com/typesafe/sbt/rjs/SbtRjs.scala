@@ -31,6 +31,7 @@ object Import {
     val preserveLicenseComments = SettingKey[Boolean]("rjs-preserve-license-comments", "Whether to preserve comments or not. Defaults to false given source maps (see http://requirejs.org/docs/errors.html#sourcemapcomments).")
     val removeCombined = SettingKey[Boolean]("rjs-remove-combined", "Whether to remove source files. Defaults to true.")
     val webJarCdns = SettingKey[Map[String, String]]("rjs-webjar-cdns", """CDNs to be used for locating WebJars. By default "org.webjars" is mapped to "jsdelivr".""")
+    val includeVersion = SettingKey[Boolean]("rjs-webjar-version", """Include version into output of WebJars """)
   }
 
 }
@@ -70,7 +71,8 @@ object SbtRjs extends AutoPlugin {
     removeCombined := true,
     resourceManaged in rjs := webTarget.value / rjs.key.label,
     rjs := runOptimizer.dependsOn(webJarsNodeModules in Plugin).value,
-    webJarCdns := Map("org.webjars" -> "//cdn.jsdelivr.net/webjars")
+    webJarCdns := Map("org.webjars" -> "//cdn.jsdelivr.net/webjars"),
+    includeVersion := false
   )
 
 
@@ -156,7 +158,8 @@ object SbtRjs extends AutoPlugin {
         } yield {
           val (moduleIdPath, moduleId) = pm
           val moduleIdRelPath = minifiedModulePath(moduleIdPath).drop(m.name.size + 1)
-          moduleId ->(lib + moduleIdPath, s"$cdn/${m.name}/${m.revision}/$moduleIdRelPath")
+          val webJarPath = if(includeVersion.value)s"$cdn/${m.name}/${m.revision}/$moduleIdRelPath" else s"$cdn/${m.name}/$moduleIdRelPath"
+          moduleId ->(lib + moduleIdPath, webJarPath)
         }
       webJarCdnPaths.flatten.toMap
     }

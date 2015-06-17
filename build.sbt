@@ -4,7 +4,7 @@ organization := "com.typesafe.sbt"
 
 name := "sbt-rjs"
 
-version := "1.0.8-SNAPSHOT"
+version := "1.0.8-TRInternal"
 
 scalaVersion := "2.10.4"
 
@@ -24,13 +24,13 @@ resolvers ++= Seq(
 
 addSbtPlugin("com.typesafe.sbt" % "sbt-js-engine" % "1.0.1")
 
-publishMavenStyle := false
+//publishMavenStyle := false
 
-publishTo := {
-  if (isSnapshot.value) Some(Classpaths.sbtPluginSnapshots)
-  else Some(Classpaths.sbtPluginReleases)
-}
+//publishTo := {
+//  if (isSnapshot.value) Some(Classpaths.sbtPluginSnapshots)
+//  else Some(Classpaths.sbtPluginReleases)
+//}
 
-scriptedSettings
+//scriptedSettings
 
-scriptedLaunchOpts <+= version apply { v => s"-Dproject.version=$v" }
+//scriptedLaunchOpts <+= version apply { v => s"-Dproject.version=$v" }
